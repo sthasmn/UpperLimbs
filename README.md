@@ -57,7 +57,7 @@ It is highly recommended to use a virtual environment to avoid conflicts with ot
 1.  **Clone the Repository**
     ```bash
     git clone https://github.com/sthasmn/UpperLimbs.git
-    cd UpperLimbs_Project
+    cd UpperLimbs
     ```
 
 2.  **Create and Activate a Virtual Environment** (Optional, but recommended)
