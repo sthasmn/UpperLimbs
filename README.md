@@ -56,7 +56,7 @@ It is highly recommended to use a virtual environment to avoid conflicts with ot
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-username/UpperLimbs_Project.git](https://github.com/your-username/UpperLimbs_Project.git)
+    git clone https://github.com/sthasmn/UpperLimbs.git
     cd UpperLimbs_Project
     ```
 
