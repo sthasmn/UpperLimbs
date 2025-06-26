@@ -108,7 +108,7 @@ import upperlimbs
 # 1. Initialize the UpperLimbs class
 ul = upperlimbs.UpperLimbs()
 
-# 2. Start video capture (0 for webcam)
+# 2. Start video capture (0 for webcam, video path for video)
 cap = cv2.VideoCapture(0)
 
 while cap.isOpened():
