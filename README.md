@@ -56,8 +56,8 @@ It is highly recommended to use a virtual environment to avoid conflicts with ot
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-username/UpperLimbs_Project.git](https://github.com/your-username/UpperLimbs_Project.git)
-    cd UpperLimbs_Project
+    git clone https://github.com/sthasmn/UpperLimbs.git
+    cd UpperLimbs
     ```
 
 2.  **Create and Activate a Virtual Environment** (Optional, but recommended)
@@ -108,7 +108,7 @@ import upperlimbs
 # 1. Initialize the UpperLimbs class
 ul = upperlimbs.UpperLimbs()
 
-# 2. Start video capture (0 for webcam)
+# 2. Start video capture (0 for webcam, video path for video file)
 cap = cv2.VideoCapture(0)
 
 while cap.isOpened():

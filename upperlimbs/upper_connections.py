@@ -1,5 +1,5 @@
 """Upper Body connections."""
-# This is the original set of connections you provided.
+
 POSE_CONNECTIONS = ((0, 1), (0,2), (1, 3), (2, 4), (3, 5), (5, 27), (4, 6))
 
 #Left Hand

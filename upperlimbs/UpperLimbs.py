@@ -20,7 +20,6 @@ class UpperLimbs:
         self.results_pose = None
         self.results_hands = None
 
-    # --- Your Original Functions (now internal methods) ---
     def _take_coordinates_pose(self, coordinates):
         if coordinates == None: return []
         keypoints = [[xyz.x, xyz.y, xyz.z] for xyz in coordinates.landmark]
