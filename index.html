@@ -1,12 +1,621 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="google-site-verification" content="17dMDpINjvtt2KuyKp4qa4RKe-RmNHZOXpDeKm8sbWM" />
-    
-    <title>My Project</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpperLimbs - 3D Upper Body Movement Tracking</title>
+    <style>
+        /* General Body and Typography Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* Header and Title Styles */
+        header {
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            font-size: 2rem;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .badges img {
+            margin: 0 5px;
+        }
+
+        /* Content-specific Styles */
+        .demo-gif {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9em;
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .key-press {
+            display: inline-block;
+            background-color: #f1f3f5;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.85em;
+            color: #495057;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Language Switcher Styles */
+        .lang-switcher {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .lang-switcher button {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .lang-switcher button:hover {
+            text-decoration: underline;
+        }
+        .lang-switcher button.active {
+            font-weight: bold;
+            color: #0056b3;
+            background-color: #e7f1ff;
+            text-decoration: none;
+        }
+
+        /* --- NEW: Language Visibility Rules --- */
+        /* By default, hide Japanese content */
+        html[lang="en"] [lang="ja"] {
+            display: none;
+        }
+        /* When Japanese is selected, hide English content */
+        html[lang="ja"] [lang="en"] {
+            display: none;
+        }
+        /* And show Japanese content */
+        html[lang="ja"] [lang="ja"] {
+            display: inline; /* Use 'inline' as it's safe for <span> tags */
+        }
+
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to my project!</h1>
-    <p>This page is used for Google Search Console verification.</p>
+
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="lang-switcher">
+            <button id="lang-en-btn" class="active" onclick="setLanguage('en')">English</button> |
+            <button id="lang-ja-btn" onclick="setLanguage('ja')">日本語</button>
+        </div>
+
+        <header>
+            <h1>UpperLimbs</h1>
+            <p class="subtitle">
+                <span lang="en">A Python module for real-time 3D tracking of upper body and hand movements using a standard webcam, powered by Google's MediaPipe framework.</span>
+                <span lang="ja">GoogleのMediaPipeフレームワークを利用し、一般的なウェブカメラで上半身と手の動きをリアルタイムに3DトラッキングするためのPythonモジュールです。</span>
+            </p>
+            <div class="badges">
+                <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="Python Version">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+            </div>
+        </header>
+
+        <section id="demo">
+            <h2>
+                <span lang="en">Demo</span>
+                <span lang="ja">デモ</span>
+            </h2>
+            <img src="https://raw.githubusercontent.com/sthasmn/UpperLimbs/main/Demo/upperlimbs_demo.gif" alt="UpperLimbs Demo GIF" class="demo-gif">
+            <p>
+                <span lang="en">This tool captures pose and hand landmarks, transforms them into a unified coordinate system, and provides simple methods to access the raw 3D data or generate a live 3D visualization of the skeleton.</span>
+                <span lang="ja">このツールは、姿勢と手のランドマークをキャプチャし、統一された座標系に変換します。そして、生の3Dデータにアクセスしたり、骨格のライブ3Dビジュアライゼーションを生成したりするためのシンプルなメソッドを提供します。</span>
+            </p>
+        </section>
+
+        <section id="features">
+            <h2>
+                <span lang="en">Features ✨</span>
+                <span lang="ja">機能 ✨</span>
+            </h2>
+            <ul>
+                <li>
+                    <span lang="en"><strong>Real-time Performance:</strong> Tracks upper body and hand landmarks directly from a webcam or video file.</span>
+                    <span lang="ja"><strong>リアルタイム性能：</strong> ウェブカメラやビデオファイルから直接、上半身と手のランドマークを追跡します。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Unified 3D Coordinates:</strong> Combines pose and hand landmarks into a single, easy-to-use data structure.</span>
+                    <span lang="ja"><strong>統一された3D座標：</strong> 姿勢と手のランドマークを、単一の使いやすいデータ構造に統合します。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Shoulder-Centric Origin:</strong> Transforms coordinates to a stable system with the origin at the center of the shoulders.</span>
+                    <span lang="ja"><strong>肩中心の原点：</strong> 座標を両肩の中心を原点とする安定したシステムに変換します。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Live 3D Visualization:</strong> Includes a built-in method to generate a dynamic 3D plot of the skeleton.</span>
+                    <span lang="ja"><strong>ライブ3D可視化：</strong> 骨格の動的な3Dプロットを生成するための組み込みメソッドが含まれています。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Simple API:</strong> Designed to be easily integrated into other applications for data analysis, interactive art, or physical therapy research.</span>
+                    <span lang="ja"><strong>シンプルなAPI：</strong> データ分析、インタラクティブアート、理学療法研究など、他のアプリケーションに簡単に統合できるように設計されています。</span>
+                </li>
+            </ul>
+        </section>
+
+        <section id="how-it-works">
+            <h2>
+                <span lang="en">How It Works ⚙️</span>
+                <span lang="ja">動作の仕組み ⚙️</span>
+            </h2>
+            <p>
+                <span lang="en">The module follows a straightforward processing pipeline to generate the final 3D coordinates:</span>
+                <span lang="ja">このモジュールは、最終的な3D座標を生成するために、以下の単純な処理パイプラインに従います。</span>
+            </p>
+            <ol>
+                <li>
+                    <span lang="en"><strong>Frame Capture:</strong> An image is captured from a video source (like a webcam).</span>
+                    <span lang="ja"><strong>フレーム取得：</strong> ビデオソース（ウェブカメラなど）から画像をキャプチャします。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>MediaPipe Processing:</strong> The image is fed into MediaPipe's <strong>Pose</strong> and <strong>Hands</strong> models, which detect and return the 3D world landmarks for each part.</span>
+                    <span lang="ja"><strong>MediaPipe処理：</strong> 画像をMediaPipeの<strong>Pose</strong>および<strong>Hands</strong>モデルに入力し、各部位の3Dワールドランドマークを検出・返却させます。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Coordinate Transformation:</strong></span>
+                    <span lang="ja"><strong>座標変換：</strong></span>
+                    <ul>
+                        <li>
+                            <span lang="en">The origin of the coordinate system is moved from the hips (MediaPipe's default) to the center point between the left and right shoulders. This provides a more stable origin for upper-body movements.</span>
+                            <span lang="ja">座標系の原点を、MediaPipeのデフォルトである腰の中心から、両肩の中心点に移動させます。これにより、上半身の動きに対してより安定した原点が得られます。</span>
+                        </li>
+                        <li>
+                            <span lang="en">The hand landmarks, which have their own local coordinate systems, are translated to align with the wrist landmarks from the pose model.</span>
+                            <span lang="ja">独自ローカル座標系を持つ手のランドマークを、姿勢モデルの手首のランドマークに揃うように平行移動させます。</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span lang="en"><strong>Data Combination:</strong> The transformed pose and hand landmarks are combined into a single list of 48 points.</span>
+                    <span lang="ja"><strong>データ統合：</strong> 変換された姿勢と手のランドマークを、48点で構成される単一のリストに統合します。</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>Output:</strong> This final list of coordinates can be retrieved with <code>.get_coordinates()</code> or visualized with <code>.visualize()</code>.</span>
+                    <span lang="ja"><strong>出力：</strong> この最終的な座標リストは、<code>.get_coordinates()</code>で取得するか、<code>.visualize()</code>で可視化することができます。</span>
+                </li>
+            </ol>
+        </section>
+
+        <section id="installation">
+            <h2>
+                <span lang="en">Installation 🚀</span>
+                <span lang="ja">インストール 🚀</span>
+            </h2>
+            <p>
+                <span lang="en">It is highly recommended to use a virtual environment to avoid conflicts with other projects.</span>
+                <span lang="ja">他のプロジェクトとの競合を避けるため、仮想環境（virtual environment）の使用を強く推奨します。</span>
+            </p>
+
+            <h3>
+                <span lang="en">1. Clone the Repository</span>
+                <span lang="ja">1. リポジトリをクローン</span>
+            </h3>
+            <pre><code>git clone https://github.com/sthasmn/UpperLimbs.git
+cd UpperLimbs</code></pre>
+
+            <h3>
+                <span lang="en">2. Create and Activate a Virtual Environment (Optional, but recommended)</span>
+                <span lang="ja">2. 仮想環境の作成と有効化（任意ですが推奨）</span>
+            </h3>
+            <p>
+                <span lang="en">For macOS/Linux:</span>
+                <span lang="ja">macOS/Linuxの場合：</span>
+            </p>
+            <pre><code>python3 -m venv venv
+source venv/bin/activate</code></pre>
+            <p>
+                <span lang="en">For Windows:</span>
+                <span lang="ja">Windowsの場合：</span>
+            </p>
+            <pre><code>python -m venv venv
+.\venv\Scripts\activate</code></pre>
+
+            <h3>
+                <span lang="en">3. Install the Package</span>
+                <span lang="ja">3. パッケージのインストール</span>
+            </h3>
+            <p>
+                <span lang="en">This command will also install all required dependencies like <code>opencv</code>, <code>mediapipe</code>, and <code>matplotlib</code>.</span>
+                <span lang="ja">このコマンドで、<code>opencv</code>、<code>mediapipe</code>、<code>matplotlib</code>などの必要な依存関係もすべてインストールされます。</span>
+            </p>
+            <pre><code>pip install .</code></pre>
+            <p>
+                <span lang="en">If you intend to modify the source code, install it in "editable" mode:</span>
+                <span lang="ja">ソースコードを編集する予定がある場合は、「編集可能（editable）」モードでインストールしてください。</span>
+            </p>
+            <pre><code>pip install -e .</code></pre>
+        </section>
+
+        <section id="usage">
+            <h2>
+                <span lang="en">Usage 👨‍💻</span>
+                <span lang="ja">使用方法 👨‍💻</span>
+            </h2>
+
+            <h3>
+                <span lang="en">Running the Demo</span>
+                <span lang="ja">デモの実行</span>
+            </h3>
+            <p>
+                <span lang="en">The included <code>main.py</code> script provides a simple demonstration using a webcam.</span>
+                <span lang="ja">同梱されている<code>main.py</code>スクリプトは、ウェブカメラを使用した簡単なデモンストレーションを提供します。</span>
+            </p>
+            <pre><code>python main.py</code></pre>
+            <ul>
+                <li>
+                    <span lang="en">A preview window will appear showing the webcam feed with 2D landmarks drawn on it.</span>
+                    <span lang="ja">ウェブカメラの映像に2Dランドマークが描画されたプレビューウィンドウが表示されます。</span>
+                </li>
+                <li>
+                    <span lang="en">Press the <span class="key-press">v</span> key to open or close the live 3D visualization window.</span>
+                    <span lang="ja"><span class="key-press">v</span> キーを押すと、ライブ3D可視化ウィンドウを開いたり閉じたりできます。</span>
+                </li>
+                <li>
+                    <span lang="en">Press the <span class="key-press">q</span> key to quit the application.</span>
+                    <span lang="ja"><span class="key-press">q</span> キーを押すと、アプリケーションを終了します。</span>
+                </li>
+            </ul>
+
+            <h3>
+                <span lang="en">Programmatic Use</span>
+                <span lang="ja">プログラムでの利用</span>
+            </h3>
+            <p>
+                <span lang="en">Integrating the <code>upperlimbs</code> module into your own project is simple.</span>
+                <span lang="ja"><code>upperlimbs</code>モジュールを自身のプロジェクトに統合するのは簡単です。</span>
+            </p>
+            <pre><code>import cv2
+import upperlimbs
+
+# 1. UpperLimbsクラスを初期化
+ul = upperlimbs.UpperLimbs()
+
+# 2. ビデオキャプチャを開始（0はウェブカメラ、またはビデオファイルのパス）
+cap = cv2.VideoCapture(0)
+
+while cap.isOpened():
+    success, image = cap.read()
+    if not success:
+        break
+
+    # 3. フレームを処理
+    ul.process_frame(image)
+
+    # 4. 座標データを取得
+    coordinates = ul.get_coordinates()
+    if coordinates:
+        # coordinatesは48点のリストです。
+        # インデックスを指定して右手首の座標を取得します。
+        right_wrist_coords = coordinates[5]
+        print(f"Right Wrist [X, Y, Z]: {right_wrist_coords}")
+
+    # 5. (任意) ライブ3Dプロットを表示
+    ul.visualize()
+
+    # 6. (任意) 2Dプレビューを表示
+    annotated_image = ul.draw_landmarks(image.copy())
+    cv2.imshow("My Preview", annotated_image)
+
+    # 'ESC'キーで終了
+    if cv2.waitKey(5) & 0xFF == 27:
+        break
+
+# 7. リソースを解放
+cap.release()
+cv2.destroyAllWindows()
+ul.close()</code></pre>
+        </section>
+
+        <section id="api-reference">
+            <h2>
+                <span lang="en">API Reference 📖</span>
+                <span lang="ja">APIリファレンス 📖</span>
+            </h2>
+            <p>
+                <span lang="en">The primary interface is the <code>UpperLimbs</code> class.</span>
+                <span lang="ja">主要なインターフェースは<code>UpperLimbs</code>クラスです。</span>
+            </p>
+            <p><code>ul = upperlimbs.UpperLimbs(min_detection_confidence=0.5, min_tracking_confidence=0.5)</code><br>
+                <span lang="en">Initializes the processor. You can optionally adjust the MediaPipe model confidence levels.</span>
+                <span lang="ja">プロセッサを初期化します。任意でMediaPipeモデルの信頼度の閾値を調整できます。</span>
+            </p>
+
+            <p><code>coordinates = ul.process_frame(image)</code><br>
+                <span lang="en">Processes a single image frame (a NumPy array in BGR format) and returns the list of 48 3D coordinates.</span>
+                <span lang="ja">単一の画像フレーム（BGR形式のNumPy配列）を処理し、48点の3D座標のリストを返します。</span>
+            </p>
+
+            <p><code>coordinates = ul.get_coordinates()</code><br>
+                <span lang="en">Returns the list of coordinates from the last successfully processed frame. Returns <code>None</code> if no landmarks were found.</span>
+                <span lang="ja">最後に正常に処理されたフレームの座標リストを返します。ランドマークが見つからなかった場合は<code>None</code>を返します。</span>
+            </p>
+
+            <p><code>ul.visualize()</code><br>
+                <span lang="en">Opens or updates a Matplotlib 3D plot window showing the skeleton based on the last processed coordinates.</span>
+                <span lang="ja">最後に処理された座標に基づき、骨格を表示するMatplotlibの3Dプロットウィンドウを開くか更新します。</span>
+            </p>
+
+            <p><code>annotated_image = ul.draw_landmarks(image)</code><br>
+                <span lang="en">Draws the 2D pose and hand landmarks detected by MediaPipe onto the provided image and returns the annotated image.</span>
+                <span lang="ja">MediaPipeによって検出された2Dの姿勢と手のランドマークを提供された画像に描画し、その画像を返します。</span>
+            </p>
+
+            <p><code>ul.close()</code><br>
+                <span lang="en">Releases the MediaPipe model resources. Should be called when you are finished.</span>
+                <span lang="ja">MediaPipeモデルのリソースを解放します。処理が終了したときに呼び出す必要があります。</span>
+            </p>
+        </section>
+
+        <section id="output-coordinate-system">
+            <h2>
+                <span lang="en">Output Coordinate System</span>
+                <span lang="ja">出力座標系</span>
+            </h2>
+            <p>
+                <span lang="en">The <code>.get_coordinates()</code> method returns a single list containing <strong>48 points</strong>. Each point is a sub-list of <code>[X, Y, Z]</code> coordinates.</span>
+                <span lang="ja"><code>.get_coordinates()</code>メソッドは、<strong>48個の点</strong>を含む単一のリストを返します。各点は<code>[X, Y, Z]</code>座標のサブリストです。</span>
+            </p>
+            <p>
+                <span lang="en">The origin <code>(0, 0, 0)</code> is the center point between the shoulders. The units are roughly metric but are scaled based on the person's detected pose.</span>
+                <span lang="ja">原点<code>(0, 0, 0)</code>は両肩の中心点です。単位はおおよそメートルですが、検出された人物の姿勢に基づいてスケーリングされます。</span>
+            </p>
+            <ul>
+                <li>
+                    <span lang="en"><strong>+X</strong> is to your right</span>
+                    <span lang="ja"><strong>+X</strong>はあなたの右方向です</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>+Y</strong> is up</span>
+                    <span lang="ja"><strong>+Y</strong>は上方向です</span>
+                </li>
+                <li>
+                    <span lang="en"><strong>+Z</strong> is towards you (out of the screen)</span>
+                    <span lang="ja"><strong>+Z</strong>は手前方向（画面から出てくる方向）です</span>
+                </li>
+            </ul>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th><span lang="en">Index Range</span><span lang="ja">インデックス範囲</span></th>
+                        <th><span lang="en">Part</span><span lang="ja">部位</span></th>
+                        <th><span lang="en">Number of Points</span><span lang="ja">点数</span></th>
+                        <th><span lang="en">Details</span><span lang="ja">詳細</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>0 - 5</code></td>
+                        <td><strong><span lang="en">Pose (Torso/Arms)</span><span lang="ja">姿勢（胴体/腕）</span></strong></td>
+                        <td>6</td>
+                        <td><span lang="en">The main joints of the upper body. See detailed breakdown below.</span><span lang="ja">上半身の主要な関節。詳細は以下を参照。</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>6 - 26</code></td>
+                        <td><strong><span lang="en">Left Hand</span><span lang="ja">左手</span></strong></td>
+                        <td>21</td>
+                        <td><span lang="en">All landmarks for the left hand. Connects to the Left Wrist (Index 4).</span><span lang="ja">左手のすべてのランドマーク。左手首（インデックス4）に接続。</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>27 - 47</code></td>
+                        <td><strong><span lang="en">Right Hand</span><span lang="ja">右手</span></strong></td>
+                        <td>21</td>
+                        <td><span lang="en">All landmarks for the right hand. Connects to the Right Wrist (Index 5).</span><span lang="ja">右手のすべてのランドマーク。右手首（インデックス5）に接続。</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>
+                <span lang="en">Detailed Breakdown of Pose Landmarks (Indices 0-5):</span>
+                <span lang="ja">姿勢ランドマークの詳細（インデックス 0-5）：</span>
+            </h3>
+            <ul>
+                <li><code>Index 0</code>: <span lang="en">Left Shoulder</span><span lang="ja">左肩</span></li>
+                <li><code>Index 1</code>: <span lang="en">Right Shoulder</span><span lang="ja">右肩</span></li>
+                <li><code>Index 2</code>: <span lang="en">Left Elbow</span><span lang="ja">左肘</span></li>
+                <li><code>Index 3</code>: <span lang="en">Right Elbow</span><span lang="ja">右肘</span></li>
+                <li><code>Index 4</code>: <span lang="en">Left Wrist</span><span lang="ja">左手首</span></li>
+                <li><code>Index 5</code>: <span lang="en">Right Wrist</span><span lang="ja">右手首</span></li>
+            </ul>
+
+            <h3>
+                <span lang="en">Detailed Breakdown of Hand Landmarks (Indices 6-47):</span>
+                <span lang="ja">手のランドマークの詳細（インデックス 6-47）：</span>
+            </h3>
+            <p>
+                <span lang="en">The 21 landmarks for each hand follow the standard MediaPipe Hand Landmark Model. For a visual diagram of these points, please refer to the official <a href="https://developers.google.com/mediapipe/solutions/vision/hand_landmarker#hand-landmarks" target="_blank" rel="noopener noreferrer">MediaPipe Hands documentation</a>.</span>
+                <span lang="ja">各手の21個のランドマークは、標準のMediaPipe Hand Landmark Modelに従います。これらの点の視覚的な図については、公式の<a href="https://developers.google.com/mediapipe/solutions/vision/hand_landmarker#hand-landmarks" target="_blank" rel="noopener noreferrer">MediaPipe Handsドキュメント</a>を参照してください。</span>
+            </p>
+        </section>
+
+        <section id="citation">
+            <h2>
+                <span lang="en">Citation 📜</span>
+                <span lang="ja">引用 📜</span>
+            </h2>
+            <p>
+                <span lang="en">If you use this software in your research or a publication, we would appreciate it if you would cite the following paper:</span>
+                <span lang="ja">このソフトウェアを研究や出版物で使用する場合は、以下の論文を引用していただけますと幸いです。</span>
+            </p>
+            <p><strong>S. Shrestha, H. Takami, Y. Honda and M. Irie, "Research on Measurement System of Upper Limb by Using Single Monocular Web Camera and Inference AI," <i>2024 17th International Convention on Rehabilitation Engineering and Assistive Technology (i-CREATe)</i>, 2024, pp. 1-4, doi: 10.1109/i-CREATe62067.2024.10776555.</strong></p>
+
+            <p>
+                <span lang="en">For your convenience, you can use the following BibTeX entry:</span>
+                <span lang="ja">便宜上、次のBibTeXエントリを使用できます。</span>
+            </p>
+            <pre><code>@INPROCEEDINGS{10776555,
+  author={Shrestha, Suman and Takami, Hibiki and Honda, Yuichiro and Irie, Mitsuru},
+  booktitle={2024 17th International Convention on Rehabilitation Engineering and Assistive Technology (i-CREATe)},
+  title={Research on Measurement System of Upper Limb by Using Single Monocular Web Camera and Inference AI},
+  year={2024},
+  pages={1-4},
+  doi={10.1109/i-CREATe62067.2024.10776555}
+}</code></pre>
+        </section>
+
+        <section id="dependencies">
+            <h2>
+                <span lang="en">Dependencies 📦</span>
+                <span lang="ja">依存関係 📦</span>
+            </h2>
+            <p>
+                <span lang="en">This project's dependencies will be installed automatically when you run <code>pip install .</code>.</span>
+                <span lang="ja">このプロジェクトの依存関係は、<code>pip install .</code> を実行すると自動的にインストールされます。</span>
+            </p>
+            <ul>
+                <li><code>opencv-python</code></li>
+                <li><code>mediapipe</code></li>
+                <li><code>numpy</code></li>
+                <li><code>matplotlib</code></li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>
+                <span lang="en">Generated from project README.md.</span>
+                <span lang="ja">プロジェクトのREADME.mdから生成されました。</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // --- REVISED: Language Switching Logic ---
+
+        // Function to set the language
+        function setLanguage(lang) {
+            // Set the 'lang' attribute on the root <html> element.
+            // CSS rules will handle showing/hiding the correct content.
+            document.documentElement.lang = lang;
+
+            // Update active state on buttons
+            document.getElementById('lang-en-btn').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-ja-btn').classList.toggle('active', lang === 'ja');
+        }
+
+        // Set the initial language based on the browser's preference, default to English
+        function initializeLanguage() {
+            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            if (userLang === 'ja') {
+                setLanguage('ja');
+            } else {
+                setLanguage('en');
+            }
+        }
+
+        // Run the initialization as soon as the script is parsed
+        initializeLanguage();
+    </script>
+
 </body>
 </html>
