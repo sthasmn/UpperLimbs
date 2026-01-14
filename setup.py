@@ -12,7 +12,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'opencv-python',
-        'mediapipe',
+        'mediapipe==0.10.14',
         'numpy',
         'matplotlib',
     ],
