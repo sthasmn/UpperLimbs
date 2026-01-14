@@ -1,6 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
-import upperlimbs  # Import your new module
+import upperlimbs
+import time
 
 
 def run_demo():
@@ -9,13 +10,22 @@ def run_demo():
 
     # You can change this to 0 for a webcam or keep the path to a video file.
     video_source = 0  # '/path/to/your/video.mp4'
-    cap = cv2.VideoCapture(video_source)
+    cap = cv2.VideoCapture(video_source, cv2.CAP_AVFOUNDATION)
     if not cap.isOpened():
         print(f"Error: Could not open video source: {video_source}")
         return
+    print("Warming up camera...")
+    for _ in range(20):
+        if cap.isOpened():
+            success, _ = cap.read()
+            if success:
+                print("Camera ready!")
+                break
+        time.sleep(0.1)
+    # --- END OF FIX ---
 
-    visualize_mode = False
-    print("Starting demo. Press 'v' to toggle 3D plot, 'q' to quit.")
+    visualize_mode = True
+    print("Starting demo. Press 'v' to turn on/off 3D plot, 'q' to quit.")
 
     while cap.isOpened():
         success, image = cap.read()
