@@ -60,3 +60,4 @@ venv.bak/
 # IDE files
 .idea/
 .vscode/
+index.html
