@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-mpl.use('macosx')
+#mpl.use('macosx')
 from .upper_connections import UPPER_CONNECTIONS  # <-- Only this line is changed
 from mpl_toolkits.mplot3d import Axes3D
 
